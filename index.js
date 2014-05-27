@@ -5,33 +5,33 @@
 var nopt = require( 'nopt' );
 var redis = require( 'socket.io-redis' );
 var socketioJwt = require( 'socketio-jwt' );
-var briareo = require( '../briareo' );
+var channels = require( '../plusultra_channels' );
 var plusultraEntrance = require( '../plusultra_entrance' );
 
 /*
   Module variables
  */
 
-var strategy
-  , briareoServer
-  , entrance
-  , knownOpts = {
-      'sioPort' : Number
-    , 'entranceHost' : String
-    , 'entrancePort' : Number
-    , 'communicationStrategy' : [ 'socket.io', 'ws' ]
-  }
-  , shortHands = {
-      'sp' : ['--sioPort', 26060]
-    , 'eh' : ['--entranceHost', 'http://127.0.0.1']
-    , 'ep' : ['--entrancePort', 6379]
-    , 'cs' : ['--communicationStrategy', 'socket.io']
-  }
-  , parsed
-  , SIO_PORT
-  , ENTRANCE_HOST
-  , ENTRANCE_PORT
-  , COMMUNICATION_STRGY;
+var strategy,
+  briareoServer,
+  entrance,
+  knownOpts = {
+    'sioPort' : Number,
+    'entranceHost' : String,
+    'entrancePort' : Number,
+    'communicationStrategy' : [ 'socket.io', 'ws' ]
+  },
+  shortHands = {
+    'sp' : ['--sioPort', 26060],
+    'eh' : ['--entranceHost', 'http://127.0.0.1'],
+    'ep' : ['--entrancePort', 6379],
+    'cs' : ['--communicationStrategy', 'socket.io']
+  },
+  parsed,
+  SIO_PORT,
+  ENTRANCE_HOST,
+  ENTRANCE_PORT,
+  COMMUNICATION_STRGY;
 
 
 parsed = nopt( knownOpts, shortHands, process.argv, 2 );
@@ -49,7 +49,7 @@ COMMUNICATION_STRGY = parsed.communicationStrategy || 'socket.io';
 
 //entrance = new plusultraEntrance( ENTRANCE_HOST, ENTRANCE_PORT );
 
-strategy = briareo.getStrategy( COMMUNICATION_STRGY );
+strategy = channels.getStrategy( COMMUNICATION_STRGY );
 
 briareoServer = strategy.createServer( {'server' : SIO_PORT} );
 
