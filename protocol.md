@@ -22,7 +22,10 @@ Sent from the client when a modality driver has recognized (sensed) something. T
 Plusultra -> to all the clients connected to a specific app. Happens when a modality emits a signal.
 -plusultra::interpretation
 Client -> plusultra. Client emits a new interpretation object recognized by its fusion module.
-
+-plusultra::interpretation
+Client -> plusultra. Client alerts platform about a new interpretation.
+-plusultra::broadcast_interpretation
+plusultra -> to all the clients connected to a specific app. This alerts all the other clients about a interpretation detected locally by some client.
 -plusultra::goodbye
 Sent from the client to leave the platform.
 
