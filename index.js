@@ -6,7 +6,7 @@ var nopt = require( 'nopt' );
 var redis = require( 'socket.io-redis' );
 var socketioJwt = require( 'socketio-jwt' );
 var channels = require( '../plusultra_channels' );
-var plusultraEntrance = require( '../plusultra_entrance' );
+//var plusultraEntrance = require( '../plusultra_entrance' );
 
 /*
   Module variables
