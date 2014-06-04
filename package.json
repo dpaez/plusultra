@@ -16,7 +16,7 @@
   "author": "Diego Paez",
   "license": "MIT",
   "dependencies": {
-    "socket.io": "git://github.com/LearnBoost/socket.io",
+    "socket.io": "^1.0.4",
     "nopt": "^2.2.0",
     "socketio-jwt": "^2.0.1",
     "socket.io-redis": "^0.1.1",

@@ -56,6 +56,12 @@ briareoServer = strategy.createServer( {'server' : SIO_PORT} );
 briareoServer.adapter( redis({ host: 'localhost', port: ENTRANCE_PORT }) );
 //briareoServer.configure( 'authorization', entrance.checkConnection );
 
+// briareoServer.use(socketioJwt.authorize({
+//   secret: 'th1s1sn0s0s3cr3t',
+//   timeout: 15000,
+//   handshake: true
+// }));
+
 var djb2Code = function(str){
   var hash = 5381;
   for (i = 0; i < str.length; i++) {
@@ -65,7 +71,7 @@ var djb2Code = function(str){
   return hash;
 };
 
-  //.on('authenticated', function( s ){
+//.on('authenticated', function( socket ){
 var onAuthenticated = function( socket ){
   socket.emit('plusultra::welcome',{msg:'Welcome to plusultra ...|_|...'});
 
@@ -113,15 +119,14 @@ var onAuthenticated = function( socket ){
   });
 
 
-  /*
   socket.on( 'plusultra::authenticate', function( data ){
     this.emit( 'authenticate', {'token':data.token} );
   });
-  */
 };
+
 
 briareoServer
   .on('connection', socketioJwt.authorize({
     secret: 'th1s1sn0s0s3cr3t',
     timeout: 15000 // 15 seconds to send the authentication message
-  },onAuthenticated));
+  }, onAuthenticated ))
