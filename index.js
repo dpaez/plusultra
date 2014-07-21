@@ -22,9 +22,9 @@ var strategy,
     'communicationStrategy' : [ 'socket.io', 'ws' ]
   },
   shortHands = {
-    'sp' : ['--sioPort', 26060],
+    'sp' : ['--sioPort', '26060'],
     'eh' : ['--entranceHost', 'http://127.0.0.1'],
-    'ep' : ['--entrancePort', 6379],
+    'ep' : ['--entrancePort', '6379'],
     'cs' : ['--communicationStrategy', 'socket.io']
   },
   parsed,
