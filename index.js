@@ -23,7 +23,7 @@ var strategy,
   },
   shortHands = {
     'sp' : ['--sioPort', '26060'],
-    'eh' : ['--entranceHost', 'http://127.0.0.1'],
+    'eh' : ['--entranceHost', 'localhost'],
     'ep' : ['--entrancePort', '6379'],
     'cs' : ['--communicationStrategy', 'socket.io']
   },
@@ -37,9 +37,33 @@ var strategy,
 parsed = nopt( knownOpts, shortHands, process.argv, 2 );
 
 // getting command line parsed args or defaults...
-SIO_PORT = parsed.sioPort || 26060;
-ENTRANCE_HOST = parsed.entranceHost || '127.0.0.1';
-ENTRANCE_PORT = parsed.entrancePort || 6379;
+SIO_PORT = parsed.sioPort || process.env.PORT || 26060;
+
+// if we deploy against appfog
+var service = false;
+var VCAP_SERVICES = {};
+if ( process.env.VCAP_SERVICES ){
+  VCAP_SERVICES = JSON.parse( process.env.VCAP_SERVICES );
+  var keys = Object.keys( VCAP_SERVICES );
+  if ( keys.length ){
+    service = VCAP_SERVICES[ keys[0] ][0];
+  }
+}
+
+if ( service ){
+  ENTRANCE_HOST = service['credentials']['host'];
+  ENTRANCE_PORT = service['credentials']['port'];
+  ENTRANCE_PWD  = service['credentials']['password'];
+}else if ( process.env.OPENSHIFT_REDIS_HOST ){
+  // if we deploy against openshift :)
+  ENTRANCE_HOST = process.env.OPENSHIFT_REDIS_HOST;
+  ENTRANCE_PORT = process.env.OPENSHIFT_REDIS_PORT;
+  ENTRANCE_PWD  = process.env.REDIS_PASSWORD;
+}else{
+  ENTRANCE_HOST = parsed.entranceHost || 'localhost';
+  ENTRANCE_PORT = parsed.entrancePort || 6379;
+}
+
 COMMUNICATION_STRGY = parsed.communicationStrategy || 'socket.io';
 
 /**
@@ -52,8 +76,11 @@ COMMUNICATION_STRGY = parsed.communicationStrategy || 'socket.io';
 strategy = channels.getStrategy( COMMUNICATION_STRGY );
 
 briareoServer = strategy.createServer( {'server' : SIO_PORT} );
-
-briareoServer.adapter( redis({ host: 'localhost', port: ENTRANCE_PORT }) );
+if ( service ){
+  briareoServer.adapter( redis({ host: ENTRANCE_HOST, port: ENTRANCE_PORT, password: ENTRANCE_PWD }) );
+}else{
+  briareoServer.adapter( redis({ host: ENTRANCE_HOST, port: ENTRANCE_PORT }) );
+}
 //briareoServer.configure( 'authorization', entrance.checkConnection );
 
 // briareoServer.use(socketioJwt.authorize({
