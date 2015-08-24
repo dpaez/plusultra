@@ -6,7 +6,6 @@ var nopt = require( 'nopt' );
 var redis = require( 'socket.io-redis' );
 var socketioJwt = require( 'socketio-jwt' );
 var channels = require( 'plusultra_channels' );
-//var plusultraEntrance = require( '../plusultra_entrance' );
 
 /*
   Module variables
@@ -70,8 +69,6 @@ COMMUNICATION_STRGY = parsed.communicationStrategy || 'socket.io';
   Module Setup
  */
 
-//entrance = new plusultraEntrance( ENTRANCE_HOST, ENTRANCE_PORT );
-
 strategy = channels.getStrategy( COMMUNICATION_STRGY );
 
 briareoServer = strategy.createServer( {'server' : SIO_PORT} );
@@ -80,13 +77,6 @@ if ( service ){
 }else{
   briareoServer.adapter( redis({ host: ENTRANCE_HOST, port: ENTRANCE_PORT }) );
 }
-//briareoServer.configure( 'authorization', entrance.checkConnection );
-
-/*briareoServer.use(socketioJwt.authorize({
-  secret: 'th1s1sn0s0s3cr3t',
-  timeout: 15000,
-  handshake: true
-}));*/
 
 var djb2Code = function(str){
   var hash = 5381;
@@ -102,12 +92,6 @@ var djb2Code = function(str){
  * Module Code
  */
 
-//briareoServer.sockets
-//.on('connection', socketioJwt.authorize({
-//  secret: 'th1s1sn0s0s3cr3t',
-//  handshake: true
-//}))
-//.on('authenticated', function( socket ){
 var onAuthenticated = function( socket ){
   socket.emit('plusultra::welcome',{msg:'Welcome to plusultra ...|_|...'});
 
