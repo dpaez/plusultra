@@ -67,9 +67,8 @@ if ( service ){
 COMMUNICATION_STRGY = parsed.communicationStrategy || 'socket.io';
 
 /**
-  Module stuff
+  Module Setup
  */
-
 
 //entrance = new plusultraEntrance( ENTRANCE_HOST, ENTRANCE_PORT );
 
@@ -83,11 +82,11 @@ if ( service ){
 }
 //briareoServer.configure( 'authorization', entrance.checkConnection );
 
-// briareoServer.use(socketioJwt.authorize({
-//   secret: 'th1s1sn0s0s3cr3t',
-//   timeout: 15000,
-//   handshake: true
-// }));
+/*briareoServer.use(socketioJwt.authorize({
+  secret: 'th1s1sn0s0s3cr3t',
+  timeout: 15000,
+  handshake: true
+}));*/
 
 var djb2Code = function(str){
   var hash = 5381;
@@ -98,6 +97,16 @@ var djb2Code = function(str){
   return hash;
 };
 
+
+/**
+ * Module Code
+ */
+
+//briareoServer.sockets
+//.on('connection', socketioJwt.authorize({
+//  secret: 'th1s1sn0s0s3cr3t',
+//  handshake: true
+//}))
 //.on('authenticated', function( socket ){
 var onAuthenticated = function( socket ){
   socket.emit('plusultra::welcome',{msg:'Welcome to plusultra ...|_|...'});
@@ -149,11 +158,18 @@ var onAuthenticated = function( socket ){
   socket.on( 'plusultra::authenticate', function( data ){
     this.emit( 'authenticate', {'token':data.token} );
   });
-};
+
+  socket.on('error', function(err){
+    console.error( err );
+  })
+}
 
 
-briareoServer
-  .on('connection', socketioJwt.authorize({
-    secret: 'th1s1sn0s0s3cr3t',
-    timeout: 15000 // 15 seconds to send the authentication message
-  }, onAuthenticated ))
+
+briareoServer.sockets
+.on('connection', socketioJwt.authorize({
+  secret: new Buffer('th1s1sn0s0s3cr3t', 'base64'),
+  timeout: 15000 // 15 seconds to send the authentication message
+}))
+.on('authenticated', onAuthenticated )
+.on('error', function ( e ){ console.error( 'Plusultra Connection Error: ', e ) } )
