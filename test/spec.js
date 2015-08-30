@@ -1,20 +1,25 @@
+/**
+ * Plusultra clients-consumer-like API tests.
+ * 
+ * Intended to be use against a "live" Plusultra instance.  
+ */
+
 var should = require( 'should' );
 var jwt = require( 'jsonwebtoken' );
 var io = require( 'socket.io-client' );
 
-var socketURL = 'ws://0.0.0.0:26060';
+var socketURL = 'ws://localhost:26060';
 var options ={
-  //'transports': ['websocket'],
-  'force new connection': true,
   'forceNew': true
 };
 
 describe("Plusultra server",function(){
 
   it('Should broadcast a single client after connect', function( done ){
+    // create client connection
     var client = io.connect( socketURL, options );
-    var secret = 'th1s1sn0s0s3cr3t';
-    var myToken = jwt.sign( { foo: 'bar' }, secret );
+    var secretBase64 = new Buffer( 'th1s1sn0s0s3cr3t', 'base64' );
+    var myToken = jwt.sign( { foo: 'bar' }, secretBase64 );
 
     client.on('connect',function(){
       client
@@ -23,9 +28,6 @@ describe("Plusultra server",function(){
         })
         .on( 'unauthorized', function(){
           console.info( 'unauthorized!' );
-        })
-        .on( 'error', function(err,res){
-          console.log( 'ERROR: ', err );
         })
         .emit( 'authenticate', {token: myToken} )
 
@@ -36,13 +38,14 @@ describe("Plusultra server",function(){
           client.disconnect( true );
           done();
         })
-    });
+    })
+    .on('error', function ( e ){ console.log('Connection Error: ', e) })
   });
 
   it('Should do a ping pong with the server', function( done ){
     var client = io.connect( socketURL, options );
-    var secret = 'th1s1sn0s0s3cr3t';
-    var myToken = jwt.sign( { foo: 'bar' }, secret );
+    var secretBase64 = new Buffer( 'th1s1sn0s0s3cr3t', 'base64' );
+    var myToken = jwt.sign( { foo: 'bar' }, secretBase64 );
 
     client.on('connect',function(){
       client
@@ -65,8 +68,8 @@ describe("Plusultra server",function(){
 
   it('Should fail at connect with bad credentials', function( done ){
     var client = io.connect( socketURL, options );
-    var secret = '4n0th3rs3cr3t';
-    var myToken = jwt.sign( { foo: 'baz' }, secret );
+    var UnknownSecretBase64 = new Buffer( '4n0th3rs3cr3t', 'base64' );
+    var myToken = jwt.sign( { foo: 'bar' }, UnknownSecretBase64 );
 
     client.on('connect',function(){
       client
@@ -74,12 +77,13 @@ describe("Plusultra server",function(){
           console.info( 'Authenticated. ...|_|... on Plusultra!\n' );
         })
 
-        .on( 'disconnect', function(  ){
+        .on( 'unauthorized', function( err ){
+          err.data.code.should.be.eql( 'invalid_token' );
+          console.info( 'Unauthorized\n' );
           done();
         })
 
-        .on( 'error', function( err ){
-          err.should.be.eql( 'handshake unauthorized' );
+        .on( 'disconnect', function(  ){
           done();
         })
 

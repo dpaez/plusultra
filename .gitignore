@@ -7,6 +7,7 @@ lib-cov
 *.srv
 *.pid
 *.gz
+*.rdb
 
 pids
 logs
@@ -14,3 +15,5 @@ results
 
 npm-debug.log
 node_modules
+
+.openshift
