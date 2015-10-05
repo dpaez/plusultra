@@ -4,6 +4,7 @@
   "description": "A message gateway for the development of multi-modal web apps.",
   "main": "index.js",
   "scripts": {
+    "start": "DEBUG=* node index",
     "test": "mocha"
   },
   "keywords": [

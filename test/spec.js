@@ -18,16 +18,17 @@ describe("Plusultra server",function(){
   it('Should broadcast a single client after connect', function( done ){
     // create client connection
     var client = io.connect( socketURL, options );
+    //var my_jsonwebtoken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoidGVzdCIsInNjb3BlcyI6WyJtZWRpdW0iXSwiaWF0IjoxNDQzMjgzMTQzfQ.DcIqzxDbFrjP-lTO_8G5g-SncRxwRcYbaPuajgJtHbI';
     var secretBase64 = new Buffer( 'th1s1sn0s0s3cr3t', 'base64' );
-    var myToken = jwt.sign( { foo: 'bar' }, secretBase64 );
+    var myToken = jwt.sign( { 'user':'test', scopes:['medium'] }, secretBase64 ); // my_jsonwebtoken former secretBase64
 
     client.on('connect',function(){
       client
         .on( 'authenticated', function(){
           console.info( 'Authenticated. ...|_|... on Plusultra!\n' );
         })
-        .on( 'unauthorized', function(){
-          console.info( 'unauthorized!' );
+        .on( 'unauthorized', function( err ){
+          console.info( 'unauthorized! - reason: ', err );
         })
         .emit( 'authenticate', {token: myToken} )
 
