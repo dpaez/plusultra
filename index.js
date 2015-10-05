@@ -2,6 +2,7 @@
   Module dependencies
  */
 
+var debug = require( 'debug' )( 'plusultra' );
 var nopt = require( 'nopt' );
 var redis = require( 'socket.io-redis' );
 var socketioJwt = require( 'socketio-jwt' );
@@ -97,6 +98,8 @@ var onAuthenticated = function( socket ){
 
   // TODO: cache this in a redis style system.
   var roomID = djb2Code( socket.decoded_token );
+  debug( 'socket.rooms ', socket.rooms );
+  debug( 'roomID ', roomID );
   if ( 'undefined' === typeof socket.rooms[ roomID ] ){
     socket.join(roomID);
     socket.currentRoom = roomID;
