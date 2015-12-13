@@ -41,10 +41,10 @@ $ node index.js OPTIONS
 OPTIONS:
 
 ```bash
-- -sp, --sioPort                  Defaults: '26060' // websocket port
-- -eh, --entranceHost             Defaults: 'localhost'
-- -ep, --entrancePort             Defaults: '6379' // redis client port
-- -cs, --communicationStrategy    Defaults: 'socket.io'
+-sp, --sioPort                  Defaults: '26060' // websocket port
+-eh, --entranceHost             Defaults: 'localhost'
+-ep, --entrancePort             Defaults: '6379' // redis client port
+-cs, --communicationStrategy    Defaults: 'socket.io'
 ```
 
 
