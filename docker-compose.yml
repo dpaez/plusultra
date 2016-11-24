@@ -1,0 +1,19 @@
+version: '2'
+services:
+  plusultra:
+    build: .
+    command: ["npm", "start", "--", "--entranceHost=redis"]
+    ports:
+      - "26060:26060"
+    links:
+      - redis
+    volumes:
+      - .:/code
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:alpine
+    volumes:
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+
