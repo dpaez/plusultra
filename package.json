@@ -11,11 +11,18 @@
     "message",
     "queue",
     "multi-modality",
-    "real-time",
-    "paas"
+    "real-time"
   ],
   "author": "Diego Paez",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dpaez/plusultra/"
+  },
+  "bugs": {
+    "url" : "https://github.com/dpaez/plusultra/issues",
+    "email" : "diego@geutstudio.com"
+  },
   "dependencies": {
     "nopt": "^2.2.0",
     "plusultra_channels": "git+https://git@github.com/dpaez/plusultra_channels.git",
